@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import LoginForm
 from django.views import View
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 
 # Create your views here.
@@ -22,3 +22,8 @@ class LoginView(View):
                 return redirect("list_projects")
         context = {"form": form}
         return render(request, "accounts/login.html", context)
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("login")
