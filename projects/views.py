@@ -1,23 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Project
-from django.views.generic import ListView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from .forms import CreateProjectForm
 
 
 # Create your views here.
-
-
-class ProjectList(LoginRequiredMixin, ListView):
-    model = Project
-    context_object_name = "projects"
-    template_name = "projects/project_list.html"
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.filter(owner=self.request.user)
-        return queryset
+@login_required
+def project_list_view(request):
+    projects = Project.objects.filter(owner=request.user)
+    context = {"projects": projects}
+    return render(request, "projects/project_list.html", context)
 
 
 @login_required

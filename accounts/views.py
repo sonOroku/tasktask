@@ -1,18 +1,14 @@
 from django.shortcuts import render, redirect
 from .forms import LoginForm, SignUpForm
-from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
 
 # Create your views here.
-class LoginView(View):
-    def get(self, request):
-        form = LoginForm()
-        context = {"form": form}
-        return render(request, "accounts/login.html", context)
 
-    def post(self, request):
+
+def login_view(request):
+    if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
@@ -21,8 +17,10 @@ class LoginView(View):
             if user is not None:
                 login(request, user)
                 return redirect("list_projects")
-        context = {"form": form}
-        return render(request, "accounts/login.html", context)
+    else:
+        form = LoginForm()
+    context = {"form": form}
+    return render(request, "accounts/login.html", context)
 
 
 def logout_view(request):
@@ -42,9 +40,8 @@ def signup_view(request):
                 user = User.objects.create_user(
                     username=username, password=password
                 )
-                if user is not None:
-                    login(request, user)
-                    return redirect("list_projects")
+                login(request, user)
+                return redirect("list_projects")
             else:
                 form.add_error("The passwords do not match.")
                 context = {"form": form}

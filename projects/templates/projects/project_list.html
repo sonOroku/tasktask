@@ -10,7 +10,7 @@
             <p>
                 <a href="{% url "create_project" %}">Create a new project</a>
             </p>
-            {% if projects %}
+            {% if projects.exists %}
                 <table>
                     <thead>
                         <tr>
@@ -19,12 +19,12 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for project in projects %}
+                        {% for project in projects.all %}
                             <tr>
                                 <td>
                                     <a href="{% url "show_project" project.id %}">{{ project.name }}</a>
                                 </td>
-                                <td>{{ project.tasks.all|length }}</td>
+                                <td>{{ project.tasks.all.count }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
